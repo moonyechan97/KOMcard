@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TransactionMapper">
+	
+	<resultMap type="vo.ResponseTransactionVO" id="responseTransactionMap">
+		<result property="transactionId" column="transaction_id"/>
+		<result property="memberId" column="member_id"/>
+		<result property="applyCd" column="apply_cd"/>
+		<result property="transactionTime" column="transaction_time"/>
+		<result property="merchantName" column="merchant_name"/>
+		<result property="accountNum" column="account_num"/>
+	</resultMap>
+	
+
+    <insert id="saveTransaction" parameterType="vo.TransactionVO">
+        INSERT INTO transaction (transaction_id, member_id, apply_cd, merchant_name, amount)
+        VALUES (seq_transaction.nextval, #{memberId}, #{applyCd}, #{merchantName}, #{amount})
+    </insert>
+    
+    <select id="selectListTransactionByMemberId" parameterType="String" resultMap="responseTransactionMap">
+    	SELECT t.*, c.NAME AS name, a.account_num AS account_num
+		  FROM TRANSACTION t JOIN APPLYCARDINFORMATION a ON a.APPLY_CD = t.apply_cd
+		                     JOIN card c ON a.CARD_ID = c.ID
+		 WHERE t.member_id = #{memberId}
+    </select>
+    
+</mapper>

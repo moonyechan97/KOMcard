@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberMapper">
+	
+	<resultMap type="kr.ac.kopo.vo.MemberVO" id="memberMap">
+		<result property="personalNum" column="personal_num"/>
+		<result property="joinDate" column="join_date"/>
+	</resultMap>
+	
+	<select id="getMemberById" parameterType="String"
+		resultMap="memberMap">
+		SELECT * FROM MEMBER@KOM_DB WHERE id = #{id}
+	</select>
+
+	<insert id="insertMember" parameterType="kr.ac.kopo.vo.MemberVO">
+		INSERT INTO MEMBER@KOM_DB (id, pwd, name, personal_num, hp)
+		VALUES (#{id}, #{pwd}, #{name}, #{personalNum}, #{hp})
+	</insert>
+
+</mapper>

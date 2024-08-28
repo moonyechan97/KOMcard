@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AccountMapper">
+	
+	<resultMap type="vo.AccountVO" id="accountMap">
+		<result property="accountNum" column="account_num" />
+		<result property="memberId" column="member_id" />
+		<result property="accountType" column="account_type" />
+		<result property="regDate" column="reg_date" />
+		<result property="accountPwd" column="account_pwd" />
+	</resultMap>
+	
+	<select id="selectListAccountListById" parameterType="String" resultMap="accountMap">
+		SELECT * FROM ACCOUNT@KOM_DB WHERE member_id = #{id}
+	</select>
+
+	<update id="updateBalance" parameterType="vo.TransactionVO">
+		UPDATE ACCOUNT@KOM_DB
+		SET BALANCE = BALANCE - #{amount}
+		where account_num = (select account_num from applyCardInformation where apply_cd = #{applyCd})
+	</update>
+	
+	<select id="selectOneAccount" parameterType="vo.TransactionVO" resultType="vo.AccountVO">
+		select *
+		  from account@KOM_DB
+		 where account_num = (select account_num from applyCardInformation where apply_cd = #{applyCd})
+	</select>
+	
+	<insert id="insertAccountHistory" parameterType="vo.TransactionVO">
+		INSERT INTO ACCOUNT_HISTORY@KOM_DB(HISTORY_NUM, ACCOUNT_NUM, YOUR_ACCOUNT_NUM, MONEY, HISTORY_TYPE, balance)
+		VALUES(sql_tbl_account_history_history_num_KOM.NEXTVAL, (select account_num from applyCardInformation where apply_cd = #{applyCd}), '카드사용', #{amount}, '2', #{balance})
+	</insert>
+
+</mapper>

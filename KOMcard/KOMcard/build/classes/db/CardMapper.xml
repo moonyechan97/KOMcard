@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CardMapper">
+	<resultMap type="vo.ApplyCardVO" id="applyCardMap">
+		<result property="applyCd" column="apply_cd"/>
+		<result property="cardId" column="card_id"/>
+		<result property="memberId" column="member_id"/>
+		<result property="accountNum" column="account_num"/>
+	</resultMap>
+	
+	<resultMap type="vo.ResponseApplyCardInfoVO" id="responseMap">
+		<result property="applyCd" column="apply_cd"/>
+		<result property="cardId" column="card_id"/>
+		<result property="memberId" column="member_id"/>
+		<result property="accountNum" column="account_num"/>
+	</resultMap>
+	
+    <select id="getAllcards" resultType="vo.CardVO">
+    	SELECT * FROM CARD
+    </select>
+
+    <select id="getCardById" parameterType="int" resultType="vo.CardVO">
+        SELECT id, name, image_path AS imagePath, description, card_type AS cardType
+        FROM CARD
+        WHERE id = #{id}
+    </select>
+    
+    <insert id="applyForCard" parameterType="vo.ApplyCardVO">
+    	INSERT INTO APPLYCARDINFORMATION (apply_cd, card_id, member_id, account_num)
+    	VALUES (seq_apply.nextval, #{cardId}, #{memberId}, #{accountNum})
+    </insert>
+
+	<select id="selectListCardsByMemberId" parameterType="String" resultMap="responseMap">
+		select aci.*, c.name as name
+		  from APPLYCARDINFORMATION aci join card c on c.id = aci.card_id
+		 where MEMBER_ID = #{memberId}
+	</select>
+    
+</mapper>
